@@ -1,0 +1,10 @@
+PyYAML
+dnslib
+pathlib
+attrdict
+progress
+circuits
+
+# apache-libcloud
+# Development verson of apache-libcloud
+-e git+https://github.com/apache/libcloud.git#egg=libcloud

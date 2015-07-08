@@ -1,0 +1,5 @@
+test.com:
+  - type: "IN"
+    class: "A"
+    name: "@"
+    value: "127.0.0.1"
