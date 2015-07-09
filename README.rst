@@ -8,6 +8,20 @@ domains
 
 domains is a Tool to create and manage domain records in the cloud.
 
+Supported cloud providers:
+
+- google
+- rackspace
+- hostvirtual
+- gandi
+- route53
+- softlayer
+- rackspace_us
+- linode
+- zerigo
+- rackspace_uk
+- digitalocean
+
 domains is MIT licensed.
 
 Installation
