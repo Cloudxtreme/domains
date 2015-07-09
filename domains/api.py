@@ -2,11 +2,13 @@ from __future__ import print_function
 
 from os import environ
 from traceback import format_exc
-from itertools import izip_longest
 from operator import attrgetter, itemgetter
 
 
 from libcloud.dns.providers import get_driver
+
+
+from .utils import preprocess
 
 
 class Domains(object):
@@ -26,7 +28,6 @@ class Domains(object):
         zones = driver.list_zones()
 
         if domain in map(attrgetter("domain"), zones):
-            import pudb; pudb.set_trace()
             zone = driver.get_zone(domain)
             records = [record for record in zone.list_records() if record.type != "NS"]
             remote = sorted(map(attrgetter("name"), records))
@@ -57,13 +58,25 @@ class Domains(object):
 
         zone = driver.get_zone(domain)
 
-        records = [record for record in zone.list_records() if record.type != "NS"]
-        remote = sorted(records, key=attrgetter("name"))
-        local = sorted(self.config[domain]["records"], key=itemgetter("name"))
+        remote = dict(
+            (record.name, record)
+            for record in zone.list_records()
+            if record.type != "NS"
+        )
 
-        for x, y in izip_longest(local, remote):
-            if y is None:
-                zone.create_record(name=x["name"], type=x["type"], data=x["data"])
+        local = dict(
+            (record["name"], record)
+            for record in self.config[domain]["records"]
+        )
+
+        for k, v in local.items():
+            if k not in remote:
+                zone.create_record(name=v["name"], type=v["type"], data=v["data"])
+            else:
+                if remote[k].data == "@" and v["data"] == "{0}.".format(domain):
+                    continue
+                if remote[k].data != v["data"]:
+                    remote[k].update(data=v["data"])
 
     def delete(self, domain):
         print("Deleting domain: {0} ... ".format(domain), end="")
@@ -77,7 +90,9 @@ class Domains(object):
     def list(self):
         print("\n".join(self.config.keys()))
 
-    def sync(self):
+    def sync(self, context=None):
+        preprocess(self.config, context)
+
         domains = self.config.keys()
         for status, domain in map(self._status, domains):
             if status == " ":

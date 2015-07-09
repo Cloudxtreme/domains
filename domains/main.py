@@ -8,6 +8,7 @@ from __future__ import print_function
 
 import os
 import sys
+from json import loads
 from os import environ
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
@@ -18,7 +19,6 @@ from pathlib import Path
 
 from .api import Domains
 from .version import version
-from .utils import preprocess
 
 
 def cmd_delete(domains, args):
@@ -34,7 +34,8 @@ def cmd_status(domains, args):
 
 
 def cmd_sync(domains, args):
-    domains.sync()
+    context = (args.context and loads(args.context)) or None
+    domains.sync(context)
 
 
 def parse_args():
@@ -94,6 +95,12 @@ def parse_args():
     )
     sync_parser.set_defaults(func=cmd_sync)
 
+    sync_parser.add_argument(
+        "-c", "--context", type=str,
+        default=None, metavar="CONTEXT",
+        help="Extra context used for templates"
+    )
+
     return parser.parse_args()
 
 
@@ -103,7 +110,7 @@ def main():
     args = parse_args()
 
     config = load(Path(args.file).resolve().open("r"))
-    preprocess(config)
+
     domains = Domains(config)
 
     args.func(domains, args)
