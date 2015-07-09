@@ -15,6 +15,7 @@ from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
 from yaml import load
 from pathlib import Path
+from attrdict import AttrDict
 
 
 from .api import Domains
@@ -34,7 +35,7 @@ def cmd_status(domains, args):
 
 
 def cmd_sync(domains, args):
-    context = (args.context and loads(args.context)) or None
+    context = (args.context and loads(args.context, object_hook=AttrDict)) or None
     domains.sync(context)
 
 

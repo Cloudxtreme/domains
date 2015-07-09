@@ -1,6 +1,7 @@
 PyYAML
 Jinja2
 pathlib
+attrdict
 
 # apache-libcloud
 # Development verson of apache-libcloud
