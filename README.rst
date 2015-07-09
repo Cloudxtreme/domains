@@ -27,4 +27,30 @@ Or install from the development repository::
 Usage
 -----
 
-...
+List domains in ``domains.yml``:
+
+.. code-block:: bash
+    
+    $ domains list
+    myrandomdomains.com
+
+Synchronoize domain configuration:
+    
+.. code-block:: bash
+    
+    $ domains sync
+    Creating domain: myrandomdomains.com ... OK
+
+After making modifications to ``domains.yml``; check the status:
+
+.. code-block:: bash
+    
+    $ domains status
+    M        myrandomdomains.com
+
+And resynchronize domain configuratino:
+
+.. code-block:: bash
+    
+    $ domains sync
+    Updating domain: myrandomdomains.com ... OK

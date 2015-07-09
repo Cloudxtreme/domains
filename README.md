@@ -21,4 +21,30 @@ Or install from the development repository:
 Usage
 -----
 
-...
+List domains in `domains.yml`:
+
+``` sourceCode
+$ domains list
+myrandomdomains.com
+```
+
+Synchronoize domain configuration:
+
+``` sourceCode
+$ domains sync
+Creating domain: myrandomdomains.com ... OK
+```
+
+After making modifications to `domains.yml`; check the status:
+
+``` sourceCode
+$ domains status
+M        myrandomdomains.com
+```
+
+And resynchronize domain configuratino:
+
+``` sourceCode
+$ domains sync
+Updating domain: myrandomdomains.com ... OK
+```

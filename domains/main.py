@@ -6,29 +6,35 @@
 
 from __future__ import print_function
 
+import os
+import sys
 from os import environ
 from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
 
 
 from yaml import load
 from pathlib import Path
-from attrdict import AttrDict
 
 
 from .api import Domains
 from .version import version
+from .utils import preprocess
+
+
+def cmd_delete(domains, args):
+    domains.delete(args.domain)
 
 
 def cmd_list(domains, args):
     domains.list()
 
 
-def cmd_sync(domains, args):
-    domains.sync()
-
-
 def cmd_status(domains, args):
     domains.status()
+
+
+def cmd_sync(domains, args):
+    domains.sync()
 
 
 def parse_args():
@@ -54,19 +60,25 @@ def parse_args():
         title="Commands", metavar="[Command]",
     )
 
+    # delete
+
+    delete_parser = subparsers.add_parser(
+        "delete",
+        help="Delete a domain name"
+    )
+    delete_parser.set_defaults(func=cmd_delete)
+
+    delete_parser.add_argument(
+        "domain", metavar="DOMAIN", type=str,
+        help="Domain to delete"
+    )
+
     # list
     list_parser = subparsers.add_parser(
         "list",
         help="List all domains"
     )
     list_parser.set_defaults(func=cmd_list)
-
-    # sync
-    sync_parser = subparsers.add_parser(
-        "sync",
-        help="Synchronize all domains"
-    )
-    sync_parser.set_defaults(func=cmd_sync)
 
     # status
     status_parser = subparsers.add_parser(
@@ -75,13 +87,23 @@ def parse_args():
     )
     status_parser.set_defaults(func=cmd_status)
 
+    # sync
+    sync_parser = subparsers.add_parser(
+        "sync",
+        help="Synchronize all domains"
+    )
+    sync_parser.set_defaults(func=cmd_sync)
+
     return parser.parse_args()
 
 
 def main():
+    sys.stdout = os.fdopen(sys.stdout.fileno(), "w", 0)
+
     args = parse_args()
 
-    config = AttrDict(load(Path(args.file).resolve().open("r")))
+    config = load(Path(args.file).resolve().open("r"))
+    preprocess(config)
     domains = Domains(config)
 
     args.func(domains, args)

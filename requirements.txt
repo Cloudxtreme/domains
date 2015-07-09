@@ -1,9 +1,6 @@
 PyYAML
-dnslib
+Jinja2
 pathlib
-attrdict
-progress
-circuits
 
 # apache-libcloud
 # Development verson of apache-libcloud

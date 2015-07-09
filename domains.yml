@@ -1,5 +1,9 @@
-test.com:
-  - type: "IN"
-    class: "A"
-    name: "@"
-    value: "127.0.0.1"
+myrandomdomains.com:
+  driver: digitalocean
+  records:
+    - type: "A"
+      name: "@"
+      data: "127.0.0.1"
+    - type: "CNAME"
+      name: "www"
+      data: "{{ domain }}."
