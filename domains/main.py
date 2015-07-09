@@ -39,6 +39,10 @@ def cmd_sync(domains, args):
     domains.sync(context)
 
 
+def cmd_view(domains, args):
+    domains.view(args.domain)
+
+
 def parse_args():
     parser = ArgumentParser(
         description=__doc__,
@@ -100,6 +104,19 @@ def parse_args():
         "-c", "--context", type=str,
         default=None, metavar="CONTEXT",
         help="Extra context used for templates"
+    )
+
+    # view
+
+    view_parser = subparsers.add_parser(
+        "view",
+        help="View a domain name"
+    )
+    view_parser.set_defaults(func=cmd_view)
+
+    view_parser.add_argument(
+        "domain", metavar="DOMAIN", type=str,
+        help="Domain to view"
     )
 
     return parser.parse_args()

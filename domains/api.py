@@ -78,6 +78,13 @@ class Domains(object):
                 if remote[k].data != v["data"]:
                     remote[k].update(data=v["data"])
 
+    def _view(self, domain):
+        driver = self._driver(self.config[domain]["driver"])
+
+        zone = driver.get_zone(domain)
+
+        return zone.export_to_bind_format()
+
     def delete(self, domain):
         print("Deleting domain: {0} ... ".format(domain), end="")
 
@@ -115,3 +122,6 @@ class Domains(object):
         domains = self.config.keys()
         for status, domain in map(self._status, domains):
             print("{0:<8} {1}".format(status, domain))
+
+    def view(self, domain):
+        print(self._view(domain))
