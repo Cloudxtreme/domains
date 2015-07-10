@@ -31,7 +31,8 @@ def cmd_list(domains, args):
 
 
 def cmd_status(domains, args):
-    domains.status()
+    context = (args.context and loads(args.context, object_hook=AttrDict)) or None
+    domains.status(context)
 
 
 def cmd_sync(domains, args):
@@ -92,6 +93,12 @@ def parse_args():
         help="Display status of all domains"
     )
     status_parser.set_defaults(func=cmd_status)
+
+    status_parser.add_argument(
+        "-c", "--context", type=str,
+        default=None, metavar="CONTEXT",
+        help="Extra context used for templates"
+    )
 
     # sync
     sync_parser = subparsers.add_parser(

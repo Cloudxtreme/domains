@@ -2,7 +2,7 @@ from __future__ import print_function
 
 from os import environ
 from traceback import format_exc
-from operator import attrgetter, itemgetter
+from operator import attrgetter, itemgetter, methodcaller
 
 
 from libcloud.dns.providers import get_driver
@@ -44,6 +44,8 @@ class Domains(object):
         records = self.config[domain]["records"]
 
         zone = driver.create_zone(domain=domain)
+        map(methodcaller("delete"), zone.list_records())
+
         for record in records:
             zone.create_record(name=record["name"], type=record["type"], data=record["data"])
 
@@ -119,8 +121,11 @@ class Domains(object):
             except Exception as e:
                 print("ERR\nERROR: {0}\n{1}".format(e, format_exc()))
 
-    def status(self):
+    def status(self, context=None):
+        preprocess(self.config, context)
+
         domains = self.config.keys()
+
         for status, domain in map(self._status, domains):
             print("{0:<8} {1}".format(status, domain))
 
