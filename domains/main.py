@@ -75,8 +75,8 @@ def parse_args():
     delete_parser.set_defaults(func=cmd_delete)
 
     delete_parser.add_argument(
-        "domain", metavar="DOMAIN", type=str,
-        help="Domain to delete"
+        "domain", nargs="*",
+        help="Domains to delete (optional)"
     )
 
     # list

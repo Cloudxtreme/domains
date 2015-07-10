@@ -85,13 +85,15 @@ class Domains(object):
 
         return zone.export_to_bind_format()
 
-    def delete(self, domain):
-        try:
-            print("Deleting domain: {0} ... ".format(domain), end="")
-            self._delete(domain)
-            print("OK")
-        except Exception as e:
-            print("ERR\nERROR: {0}\n{1}".format(e, format_exc()))
+    def delete(self, domains=None):
+        domains = domains or self.config.keys()
+        for domain in domains:
+            try:
+                print("Deleting domain: {0} ... ".format(domain), end="")
+                self._delete(domain)
+                print("OK")
+            except Exception as e:
+                print("ERR\nERROR: {0}\n{1}".format(e, format_exc()))
 
     def list(self):
         print("\n".join(self.config.keys()))

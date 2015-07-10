@@ -1,4 +1,4 @@
-myrandomdomains.com:
+myrandomdomain.com:
   driver: digitalocean
   records:
     - type: "A"
