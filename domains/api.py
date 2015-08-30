@@ -5,6 +5,8 @@ from traceback import format_exc
 from operator import attrgetter, itemgetter, methodcaller
 
 
+from six import u
+
 from libcloud.dns.providers import get_driver
 
 
@@ -82,6 +84,12 @@ class Domains(object):
 
     def _view(self, domain):
         driver = self._driver(self.config[domain]["driver"])
+
+        zones = driver.list_zones()
+        domains = map(attrgetter("domain"), zones)
+
+        if domain not in domains:
+            return u("404 Not Found: {0}".format(domain))
 
         zone = driver.get_zone(domain)
 

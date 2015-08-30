@@ -1,3 +1,4 @@
+six
 PyYAML
 Jinja2
 pathlib

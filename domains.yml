@@ -7,6 +7,3 @@ myrandomdomain.com:
     - type: "CNAME"
       name: "www"
       data: "{{ domain }}."
-    - type: "A"
-      name: "bar"
-      data: "{{ foo.bar.baz }}"
