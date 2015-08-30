@@ -1,5 +1,7 @@
 *~
 dist
+.eggs
 build
 *.py[co]
 *.egg-info
+*/version.py

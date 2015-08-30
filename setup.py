@@ -4,9 +4,6 @@
 from setuptools import setup, find_packages
 
 
-from domains.version import version
-
-
 def parse_requirements(filename):
     with open(filename, "r") as f:
         for line in f:
@@ -16,7 +13,6 @@ def parse_requirements(filename):
 
 setup(
     name="domains",
-    version=version,
     description="Tool to create and manage domain records in the cloud",
     long_description=open("README.rst", "r").read(),
     author="James Mills",
@@ -48,5 +44,11 @@ setup(
             "domains=domains.main:main"
         ]
     },
-    zip_safe=True
+    zip_safe=True,
+    use_scm_version={
+        "write_to": "domains/version.py",
+    },
+    setup_requires=[
+        "setuptools_scm"
+    ],
 )
