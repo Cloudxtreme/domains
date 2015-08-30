@@ -9,8 +9,9 @@ def process(domain, record, context=None):
     context["domain"] = domain
 
     for k, v in record.items():
-        t = Template(v)
-        record[k] = t.render(**context)
+        if isinstance(v, (str, unicode,)):
+            t = Template(v)
+            record[k] = t.render(**context)
 
 
 def preprocess(config, context=None):

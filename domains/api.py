@@ -49,7 +49,14 @@ class Domains(object):
         map(methodcaller("delete"), zone.list_records())
 
         for record in records:
-            zone.create_record(name=record["name"], type=record["type"], data=record["data"])
+            if record["type"] == "MX":
+                extra = {"priority": record["priority"]}
+            else:
+                extra = {}
+            zone.create_record(
+                name=record["name"], type=record["type"],
+                data=record["data"], extra=extra,
+            )
 
     def _delete(self, domain):
         driver = self._driver(self.config[domain]["driver"])
@@ -75,12 +82,21 @@ class Domains(object):
 
         for k, v in local.items():
             if k not in remote:
-                zone.create_record(name=v["name"], type=v["type"], data=v["data"])
+                extra = {"priority": v["priority"]} if v["type"] == "MX" else {}
+                zone.create_record(
+                    name=v["name"], type=v["type"],
+                    data=v["data"], extra=extra,
+                )
             else:
                 if remote[k].data == "@" and v["data"] == "{0}.".format(domain):
                     continue
                 if remote[k].data != v["data"]:
-                    remote[k].update(data=v["data"])
+                    extra = {"priority": v["priority"]} if v["type"] == "MX" else {}
+                    remote[k].update(data=v["data"], extra=extra)
+
+        for k, v in remote.items():
+            if k not in local:
+                v.delete()
 
     def _view(self, domain):
         driver = self._driver(self.config[domain]["driver"])
