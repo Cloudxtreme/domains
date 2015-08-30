@@ -4,6 +4,9 @@ Jinja2
 pathlib
 attrdict
 
+dnspython
+easyzone
+
 # apache-libcloud
 # Development verson of apache-libcloud
 -e git+https://github.com/apache/libcloud.git#egg=libcloud

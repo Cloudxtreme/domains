@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+
+from __future__ import print_function
+
+
+import sys
+from os.path import basename
+
+
+from yaml import dump
+
+from easyzone import easyzone
+
+
+filename = sys.argv[1]
+domain = basename(filename)
+zone = easyzone.zone_from_file(domain, filename)
+
+records = []
+
+data = {
+    domain: {
+        "driver": "digitalocean",
+        "records": records
+    }
+}
+
+for name in zone.names.values():
+    label = name.name.replace(zone.domain, "").rstrip(".")
+    if not label:
+        label = zone.domain
+    for rtype in ("A", "MX", "CNAME",):
+        if name.records(rtype):
+            for item in name.records(rtype).items:
+                record = {
+                    "type": rtype,
+                    "name": label,
+                    "data": item
+                }
+
+                if rtype == "MX" and isinstance(item, tuple):
+                    record["priority"] = item[0]
+                    record["data"] = item[1]
+
+                records.append(record)
+
+print(dump(data, default_flow_style=False))
